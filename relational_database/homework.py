@@ -190,7 +190,7 @@ def task_11_list_customers_starting_from_11th(cur):
 
     cur.execute("""SELECT *
                    FROM customers
-                   WHERE customerid > %s""", ('11',))
+                   OFFSET %s""", ('11',))
     return cur.fetchall()
 
 
