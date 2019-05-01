@@ -47,12 +47,71 @@
     Колекціонерів можна порівнювати за ціною всіх їх автомобілів.
 """
 
+from objects_and_classes.homework.constants import CARS_TYPES, CARS_PRODUCER, TOWNS
+from uuid import uuid4
 
-class Millionaire:
-    pass
+
+class CustomException(Exception):
+    def __init__(self, message):
+        self.message = message
 
 
 class Car:
+
+    def __init__(self, price, type, producer, mileage):
+
+        if not isinstance(price, int) and not isinstance(price, float) \
+                and not isinstance(mileage, int) and not isinstance(mileage, float):
+            raise CustomException("'Price' and 'Mileage' arguments should be numeric")
+
+        if not isinstance(price, int) and not isinstance(price, float):
+            raise CustomException("'Price' argument should be numeric")
+
+        if not isinstance(mileage, int) and not isinstance(price, float):
+            raise CustomException("'Mileage' argument should be numeric")
+
+        if type not in CARS_TYPES and producer not in CARS_PRODUCER:
+            raise CustomException("Incorrect value for 'Type' and 'Producer' arguments")
+
+        if type not in CARS_TYPES and producer in CARS_PRODUCER:
+            raise CustomException("Incorrect value for 'Type' argument")
+
+        if type in CARS_TYPES and producer not in CARS_PRODUCER:
+            raise CustomException("Incorrect value for 'Producer' argument")
+
+        self.price = float(price)
+        self.type = type
+        self.producer = producer
+        self.mileage = float(mileage)
+        self.number = uuid4()
+
+    def __str__(self):
+        return "Price: ${}, Type: {}, Producer: {}, Number: {}, Mileage: {}"\
+                .format(self.price, self.type, self.producer, self.number, self.mileage)
+
+    def __eq__(self, other):
+        return self.price == other.price
+
+    def __ne__(self, other):
+        return self.price != other.price
+
+    def __gt__(self, other):
+        return self.price > other.price
+
+    def __ge__(self, other):
+        return self.price >= other.price
+
+    def __lt__(self, other):
+        return self.price < other.price
+
+    def __le__(self, other):
+        return self.price <= other.price
+
+    def ChangeNumber(self):
+        self.number = uuid4()
+
+
+class Millionaire:
     pass
 
 
@@ -60,3 +119,59 @@ class Garage:
     pass
 
 
+
+######################################
+
+try:
+    c1 = Car(price=10000, type='Seda', producer='Bugatt', mileage=100)
+except CustomException as err:
+    print("c1", err, "\n")
+
+try:
+    c1 = Car(price=10000, type='Sedan', producer='Bugatt', mileage=100)
+except CustomException as err:
+    print("c1", err, "\n")
+
+try:
+    c1 = Car(price=10000, type='Seda', producer='Bugatti', mileage=100)
+except CustomException as err:
+    print("c1", err, "\n")
+
+try:
+    c1 = Car(price='10000', type='Sedan', producer='Bugatti', mileage='100')
+except CustomException as err:
+    print("c1", err, "\n")
+
+try:
+    c1 = Car(price=10000, type='Sedan', producer='Bugatti', mileage='100')
+except CustomException as err:
+    print("c1", err, "\n")
+
+try:
+    c1 = Car(price='10000', type='Sedan', producer='Bugatti', mileage=100)
+except CustomException as err:
+    print("c1", err, "\n")
+
+c1 = Car(price=10000, type='Sedan', producer='Bugatti', mileage=100)
+
+print("c1", c1, "\n")
+
+c1.ChangeNumber()
+
+print("c1", c1, "\n")
+
+c2 = Car(price=20000, type='Truck', producer='Ford', mileage=90000)
+
+print("c2", c2, "\n")
+
+print("c2 == c1", c2 == c1, "\n")
+
+print("c2 > c1", c2 > c1, "\n")
+
+print("c2 >= c1", c2 >= c1, "\n")
+
+print("c2 < c1", c2 < c1, "\n")
+
+print("c2 <= c1", c2 <= c1, "\n")
+
+print("c2 != c1", c2 != c1, "\n")
