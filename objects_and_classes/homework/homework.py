@@ -65,7 +65,7 @@ class Car:
         if not isinstance(price, int) and not isinstance(price, float):
             errorStack += "\n'Price' argument should be numeric\n"
 
-        if not isinstance(mileage, int) and not isinstance(price, float):
+        if not isinstance(mileage, int) and not isinstance(mileage, float):
             errorStack += "\n'Mileage' argument should be numeric\n"
 
         if type not in CARS_TYPES:
