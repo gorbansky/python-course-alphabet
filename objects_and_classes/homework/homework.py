@@ -49,6 +49,7 @@
 
 from objects_and_classes.homework.constants import CARS_TYPES, CARS_PRODUCER, TOWNS
 from uuid import uuid4
+from typing import List
 
 
 class CustomException(Exception):
@@ -81,11 +82,11 @@ class Car:
         self.type = type
         self.producer = producer
         self.mileage = float(mileage)
-        self.number = uuid4()
+        self.id = uuid4()
 
     def __str__(self):
-        return "Price: ${}, Type: {}, Producer: {}, Number: {}, Mileage: {}"\
-                .format(self.price, self.type, self.producer, self.number, self.mileage)
+        return "Price: ${}, Type: {}, Producer: {}, Id: {}, Mileage: {}"\
+                .format(self.price, self.type, self.producer, self.id, self.mileage)
 
     def __eq__(self, other):
         return self.price == other.price
@@ -105,21 +106,72 @@ class Car:
     def __le__(self, other):
         return self.price <= other.price
 
-    def ChangeNumber(self):
-        self.number = uuid4()
+    def ChangeId(self):
+        self.id = uuid4()
+
+
+class Garage:
+
+    cars: List[Car]
+
+    def enoughSpace(self):
+        return self.places-len(self.cars) >= 0
+
+    def __init__(self, town, places, cars=None, owner=None):
+
+        errorStack = ''
+
+        if not isinstance(places, int):
+            errorStack += "\n'Places' argument should be 'int'\n"
+
+        if places <= 0:
+            errorStack += "\n'Places' argument should be greater than 0\n"
+
+        if town not in TOWNS:
+            errorStack += "\nIncorrect value for 'Town' argument\n"
+
+        if errorStack:
+            raise CustomException(errorStack)
+
+        self.town = town
+        self.cars = cars if cars is not None else []
+        self.places = places
+        self.owner = owner
+
+        if not self.enoughSpace():
+            raise CustomException("\nThere is no enough free places in garage\n")
+
+    def __str__(self):
+        return "Town: {}, Cars: {}, Places: {}, Owner: {}"\
+                .format(self.town, len(self.cars), self.places, self.owner)
+
+    def remove(self, car):
+        if car in self.cars:
+            self.cars.remove(car)
+        else:
+            raise CustomException("\nCar doesn`t exists in this garage\n")
+
+    def add(self, car):
+        if car not in self.cars:
+            self.cars.append(car)
+        else:
+            raise CustomException("\nCar already exists in this garage\n")
+        if not self.enoughSpace():
+            self.remove(car)
+            raise CustomException("\nThere is no enough free places in garage\n")
+
+    def hit_hat(self):
+        return sum([car.price for car in self.cars])
 
 
 class Millionaire:
     pass
 
 
-class Garage:
-    pass
-
 
 
 ######################################
-
+'''
 try:
     c1 = Car(price='10000', type='Seda', producer='Bugatt', mileage='100')
 except CustomException as err:
@@ -154,7 +206,7 @@ c1 = Car(price=10000, type='Sedan', producer='Bugatti', mileage=100)
 
 print("c1", c1, "\n")
 
-c1.ChangeNumber()
+c1.ChangeId()
 
 print("c1", c1, "\n")
 
@@ -173,3 +225,14 @@ print("c2 < c1", c2 < c1, "\n")
 print("c2 <= c1", c2 <= c1, "\n")
 
 print("c2 != c1", c2 != c1, "\n")
+'''
+
+g1 = Garage('Kiev', 2)
+c1 = Car(price=10000, type='Sedan', producer='Bugatti', mileage=100)
+c2 = Car(price=20000, type='Truck', producer='Ford', mileage=90000)
+print(1)
+g1.add(c1)
+print(g1)
+print(2)
+g1.add(c2)
+print(g1)
