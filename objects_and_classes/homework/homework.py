@@ -63,16 +63,16 @@ class Car:
         errorStack = ''
 
         if not isinstance(price, int) and not isinstance(price, float):
-            errorStack += "'Price' argument should be numeric" + "\n"
+            errorStack += "\n'Price' argument should be numeric\n"
 
         if not isinstance(mileage, int) and not isinstance(price, float):
-            errorStack += "'Mileage' argument should be numeric" + "\n"
+            errorStack += "\n'Mileage' argument should be numeric\n"
 
         if type not in CARS_TYPES:
-            errorStack += "Incorrect value for 'Type' argument" + "\n"
+            errorStack += "\nIncorrect value for 'Type' argument\n"
 
         if producer not in CARS_PRODUCER:
-            errorStack += "Incorrect value for 'Producer' argument" + "\n"
+            errorStack += "\nIncorrect value for 'Producer' argument\n"
 
         if errorStack:
             raise CustomException(errorStack)
@@ -119,7 +119,6 @@ class Garage:
 
 
 ######################################
-
 
 try:
     c1 = Car(price='10000', type='Seda', producer='Bugatt', mileage='100')
