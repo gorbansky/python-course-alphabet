@@ -60,24 +60,22 @@ class Car:
 
     def __init__(self, price, type, producer, mileage):
 
-        if not isinstance(price, int) and not isinstance(price, float) \
-                and not isinstance(mileage, int) and not isinstance(mileage, float):
-            raise CustomException("'Price' and 'Mileage' arguments should be numeric")
+        errorStack = ''
 
         if not isinstance(price, int) and not isinstance(price, float):
-            raise CustomException("'Price' argument should be numeric")
+            errorStack += "'Price' argument should be numeric" + "\n"
 
         if not isinstance(mileage, int) and not isinstance(price, float):
-            raise CustomException("'Mileage' argument should be numeric")
+            errorStack += "'Mileage' argument should be numeric" + "\n"
 
-        if type not in CARS_TYPES and producer not in CARS_PRODUCER:
-            raise CustomException("Incorrect value for 'Type' and 'Producer' arguments")
+        if type not in CARS_TYPES:
+            errorStack += "Incorrect value for 'Type' argument" + "\n"
 
-        if type not in CARS_TYPES and producer in CARS_PRODUCER:
-            raise CustomException("Incorrect value for 'Type' argument")
+        if producer not in CARS_PRODUCER:
+            errorStack += "Incorrect value for 'Producer' argument" + "\n"
 
-        if type in CARS_TYPES and producer not in CARS_PRODUCER:
-            raise CustomException("Incorrect value for 'Producer' argument")
+        if errorStack:
+            raise CustomException(errorStack)
 
         self.price = float(price)
         self.type = type
@@ -122,8 +120,9 @@ class Garage:
 
 ######################################
 
+
 try:
-    c1 = Car(price=10000, type='Seda', producer='Bugatt', mileage=100)
+    c1 = Car(price='10000', type='Seda', producer='Bugatt', mileage='100')
 except CustomException as err:
     print("c1", err, "\n")
 
