@@ -78,55 +78,61 @@ class Car:
         if error_stack:
             raise CustomException(error_stack)
 
-        self.price = float(price)
-        self.car_type = car_type
-        self.producer = producer
-        self.mileage = float(mileage)
-        self.id = uuid4()
-        self.in_garage = False
-        self.flag = True
+        self.__price = float(price)
+        self.__car_type = car_type
+        self.__producer = producer
+        self.__mileage = float(mileage)
+        self.__id = uuid4()
+        self.__in_garage = False
+        self.__flag = True
 
     def __str__(self):
         return "Price: ${}, Type: {}, Producer: {}, Id: {}, Mileage: {}"\
-                .format(self.price, self.car_type, self.producer, self.id, self.mileage)
+                .format(self.__price, self.__car_type, self.__producer, self.__id, self.__mileage)
 
     def __eq__(self, other):
-        return self.price == other.price
+        return self.__price == other.price
 
     def __ne__(self, other):
-        return self.price != other.price
+        return self.__price != other.price
 
     def __gt__(self, other):
-        return self.price > other.price
+        return self.__price > other.price
 
     def __ge__(self, other):
-        return self.price >= other.price
+        return self.__price >= other.price
 
     def __lt__(self, other):
-        return self.price < other.price
+        return self.__price < other.price
 
     def __le__(self, other):
-        return self.price <= other.price
+        return self.__price <= other.price
 
     def __next__(self):
-        if self.flag:
-            self.flag = False
+        if self.__flag:
+            self.__flag = False
             return self
         else:
-            self.flag = True
+            self.__flag = True
             raise StopIteration
 
     def __iter__(self):
         return self
 
     def change_id(self):
-        self.id = uuid4()
+        self.__id = uuid4()
+
+    def get_price(self):
+        return self.__price
+
+    def get_id(self):
+        return self.__id
 
     def set_garage(self, flag):
-        self.in_garage = flag
+        self.__in_garage = flag
 
     def is_in_garage(self):
-        return self.in_garage
+        return self.__in_garage
 
 
 class Garage:
@@ -166,7 +172,7 @@ class Garage:
             self.rollback(rollback_list)
             raise CustomException(error_stack)
 
-        self.town = town
+        self.__town = town
         self.cars = cars if cars is not None else []
         self.places = places
         self.owner = owner
@@ -180,7 +186,7 @@ class Garage:
 
     def __str__(self):
         return "Town: {}, Cars: {}, Places: {}, Owner: {}"\
-                .format(self.town, len(self.cars), self.places, self.owner)
+                .format(self.__town, len(self.cars), self.places, self.owner)
 
     def __next__(self):
         if self.flag:
@@ -196,25 +202,28 @@ class Garage:
     def __lt__(self, other):
         return self.free_space() < other.free_space()
 
+    def __contains__(self, car):
+        return car.get_id() in (v_car.get_id() for v_car in self.cars)
+
     def remove(self, car):
         if car in self.cars:
             self.cars.remove(car)
             car.set_garage(False)
         else:
-            raise CustomException("\nCar with id "+str(car.id)+" doesn`t exists in this garage\n")
+            raise CustomException("\nCar with id "+str(car.get_id())+" doesn`t exists in this garage\n")
 
     def add(self, car):
-        if car not in self.cars:
+        if car not in self and not car.is_in_garage():
             self.cars.append(car)
             car.set_garage(True)
         else:
-            raise CustomException("\nCar with id "+str(car.id)+" already exists in this garage\n")
+            raise CustomException("\nCar with id "+str(car.get_id())+" already exists in garage\n")
         if not self.enough_space():
             self.remove(car)
             raise CustomException("\nThere is no enough free places in garage\n")
 
     def hit_hat(self):
-        return sum([car.price for car in self.cars])
+        return sum([car.get_price() for car in self.cars])
 
     def set_owner(self, owner_id=None):
         self.owner = owner_id
