@@ -59,34 +59,36 @@ class CustomException(Exception):
 
 class Car:
 
-    def __init__(self, price, type, producer, mileage):
+    def __init__(self, price, car_type, producer, mileage):
 
-        errorStack = ''
+        error_stack = ''
 
         if not isinstance(price, int) and not isinstance(price, float):
-            errorStack += "\n'Price' argument should be numeric\n"
+            error_stack += "\n'Price' argument should be numeric\n"
 
         if not isinstance(mileage, int) and not isinstance(mileage, float):
-            errorStack += "\n'Mileage' argument should be numeric\n"
+            error_stack += "\n'Mileage' argument should be numeric\n"
 
-        if type not in CARS_TYPES:
-            errorStack += "\nIncorrect value for 'Type' argument\n"
+        if car_type not in CARS_TYPES:
+            error_stack += "\nIncorrect value for 'Type' argument\n"
 
         if producer not in CARS_PRODUCER:
-            errorStack += "\nIncorrect value for 'Producer' argument\n"
+            error_stack += "\nIncorrect value for 'Producer' argument\n"
 
-        if errorStack:
-            raise CustomException(errorStack)
+        if error_stack:
+            raise CustomException(error_stack)
 
         self.price = float(price)
-        self.type = type
+        self.car_type = car_type
         self.producer = producer
         self.mileage = float(mileage)
         self.id = uuid4()
+        self.in_garage = False
+        self.flag = True
 
     def __str__(self):
         return "Price: ${}, Type: {}, Producer: {}, Id: {}, Mileage: {}"\
-                .format(self.price, self.type, self.producer, self.id, self.mileage)
+                .format(self.price, self.car_type, self.producer, self.id, self.mileage)
 
     def __eq__(self, other):
         return self.price == other.price
@@ -106,133 +108,191 @@ class Car:
     def __le__(self, other):
         return self.price <= other.price
 
-    def ChangeId(self):
+    def __next__(self):
+        if self.flag:
+            self.flag = False
+            return self
+        else:
+            self.flag = True
+            raise StopIteration
+
+    def __iter__(self):
+        return self
+
+    def change_id(self):
         self.id = uuid4()
+
+    def set_garage(self, flag):
+        self.in_garage = flag
+
+    def is_in_garage(self):
+        return self.in_garage
 
 
 class Garage:
 
     cars: List[Car]
 
-    def enoughSpace(self):
+    def enough_space(self):
         return self.places-len(self.cars) >= 0
+
+    def rollback(self, cars):
+        for v_car in cars:
+            v_car.set_garage(False)
 
     def __init__(self, town, places, cars=None, owner=None):
 
-        errorStack = ''
+        error_stack = ''
+        rollback_list = []
 
         if not isinstance(places, int):
-            errorStack += "\n'Places' argument should be 'int'\n"
+            error_stack += "\n'Places' argument should be 'int'\n"
 
         if places <= 0:
-            errorStack += "\n'Places' argument should be greater than 0\n"
+            error_stack += "\n'Places' argument should be greater than 0\n"
 
         if town not in TOWNS:
-            errorStack += "\nIncorrect value for 'Town' argument\n"
+            error_stack += "\nIncorrect value for 'Town' argument\n"
 
-        if errorStack:
-            raise CustomException(errorStack)
+        if cars:
+            for v_car in cars:
+                if v_car.is_in_garage():
+                    error_stack += "\nCar with id "+str(v_car.id)+" can not be added to more than one garage\n"
+                else:
+                    v_car.set_garage(True)
+                    rollback_list.append(v_car)
+
+        if error_stack:
+            self.rollback(rollback_list)
+            raise CustomException(error_stack)
 
         self.town = town
         self.cars = cars if cars is not None else []
         self.places = places
         self.owner = owner
+        self.flag = True
 
-        if not self.enoughSpace():
+        if not self.enough_space():
+            self.rollback(rollback_list)
             raise CustomException("\nThere is no enough free places in garage\n")
+
+        rollback_list.clear()
 
     def __str__(self):
         return "Town: {}, Cars: {}, Places: {}, Owner: {}"\
                 .format(self.town, len(self.cars), self.places, self.owner)
 
+    def __next__(self):
+        if self.flag:
+            self.flag = False
+            return self
+        else:
+            self.flag = True
+            raise StopIteration
+
+    def __iter__(self):
+        return self
+
+    def __lt__(self, other):
+        return self.free_space() < other.free_space()
+
     def remove(self, car):
         if car in self.cars:
             self.cars.remove(car)
+            car.set_garage(False)
         else:
-            raise CustomException("\nCar doesn`t exists in this garage\n")
+            raise CustomException("\nCar with id "+str(car.id)+" doesn`t exists in this garage\n")
 
     def add(self, car):
         if car not in self.cars:
             self.cars.append(car)
+            car.set_garage(True)
         else:
-            raise CustomException("\nCar already exists in this garage\n")
-        if not self.enoughSpace():
+            raise CustomException("\nCar with id "+str(car.id)+" already exists in this garage\n")
+        if not self.enough_space():
             self.remove(car)
             raise CustomException("\nThere is no enough free places in garage\n")
 
     def hit_hat(self):
         return sum([car.price for car in self.cars])
 
+    def set_owner(self, owner_id=None):
+        self.owner = owner_id
+
+    def free_space(self):
+        return self.places-len(self.cars)
+
 
 class Millionaire:
-    pass
 
+    garages = List[Garage]
 
+    def rollback(self, garages):
+        for v_garage in garages:
+            v_garage.set_owner()
 
+    def __init__(self, name, garages=None):
 
-######################################
-'''
-try:
-    c1 = Car(price='10000', type='Seda', producer='Bugatt', mileage='100')
-except CustomException as err:
-    print("c1", err, "\n")
+        error_stack = ''
+        rollback_list = []
 
-try:
-    c1 = Car(price=10000, type='Sedan', producer='Bugatt', mileage=100)
-except CustomException as err:
-    print("c1", err, "\n")
+        self.name = str(name)
+        self.register_id = uuid4()
 
-try:
-    c1 = Car(price=10000, type='Seda', producer='Bugatti', mileage=100)
-except CustomException as err:
-    print("c1", err, "\n")
+        if garages:
+            self.garages = garages
+            for v_garage in garages:
+                if v_garage.owner:
+                    error_stack += "\nGarage can not be assigned to more than one owner\n"
+                else:
+                    v_garage.set_owner(self.register_id)
+                    rollback_list.append(v_garage)
+        else:
+            self.garages = []
 
-try:
-    c1 = Car(price='10000', type='Sedan', producer='Bugatti', mileage='100')
-except CustomException as err:
-    print("c1", err, "\n")
+        if error_stack:
+            self.rollback(rollback_list)
+            raise CustomException(error_stack)
 
-try:
-    c1 = Car(price=10000, type='Sedan', producer='Bugatti', mileage='100')
-except CustomException as err:
-    print("c1", err, "\n")
+        rollback_list.clear()
 
-try:
-    c1 = Car(price='10000', type='Sedan', producer='Bugatti', mileage=100)
-except CustomException as err:
-    print("c1", err, "\n")
+    def __str__(self):
+        return "Name: {}, Garages: {}, Cars: {}, Total cars cost: {}" \
+            .format(self.name, self.garages_count(), self.cars_count(), self.hit_hat())
 
-c1 = Car(price=10000, type='Sedan', producer='Bugatti', mileage=100)
+    def __eq__(self, other):
+        return self.hit_hat() == other.hit_hat()
 
-print("c1", c1, "\n")
+    def __gt__(self, other):
+        return self.hit_hat() > other.hit_hat()
 
-c1.ChangeId()
+    def __ge__(self, other):
+        return self.hit_hat() >= other.hit_hat()
 
-print("c1", c1, "\n")
+    def __lt__(self, other):
+        return self.hit_hat() < other.hit_hat()
 
-c2 = Car(price=20000, type='Truck', producer='Ford', mileage=90000)
+    def __le__(self, other):
+        return self.hit_hat() <= other.hit_hat()
 
-print("c2", c2, "\n")
+    def __ne__(self, other):
+        return self.hit_hat() != other.hit_hat()
 
-print("c2 == c1", c2 == c1, "\n")
+    def hit_hat(self):
+        return sum(map(lambda garage: garage.hit_hat(), self.garages))
 
-print("c2 > c1", c2 > c1, "\n")
+    def garages_count(self):
+        return len(self.garages)
 
-print("c2 >= c1", c2 >= c1, "\n")
+    def cars_count(self):
+        return sum(map(lambda garage: len(garage.cars), self.garages))
 
-print("c2 < c1", c2 < c1, "\n")
-
-print("c2 <= c1", c2 <= c1, "\n")
-
-print("c2 != c1", c2 != c1, "\n")
-'''
-
-g1 = Garage('Kiev', 2)
-c1 = Car(price=10000, type='Sedan', producer='Bugatti', mileage=100)
-c2 = Car(price=20000, type='Truck', producer='Ford', mileage=90000)
-print(1)
-g1.add(c1)
-print(g1)
-print(2)
-g1.add(c2)
-print(g1)
+    def add_car(self, car, garage=None):
+        if garage:
+            if garage in self.garages:
+                garage.add(car)
+            else:
+                raise CustomException("\n"+self.name+" is not owner of this garage\n")
+        else:
+            self.garages.sort(reverse=True)
+            self.garages[0].add(car)
