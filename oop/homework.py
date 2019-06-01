@@ -39,31 +39,83 @@ class Cat:
     """
 
     def __init__(self, age):
-        pass
+        self.age = age
+        self.average_speed = self._set_average_speed()
+        self.saturation_level = 50
 
     def eat(self, product):
-        pass
+        product_set = {"fodder": 10, "apple": 5, "milk": 2}
+        if product in product_set:
+            self._increase_saturation_level(product_set[product])
+        else:
+            raise ValueError("Incorrect product")
 
     def _reduce_saturation_level(self, value):
-        pass
+        self.saturation_level -= value
+        if self.saturation_level < 0:
+            self.saturation_level = 0
 
     def _increase_saturation_level(self, value):
-        pass
+        self.saturation_level += value
+        if self.saturation_level > 100:
+            self.saturation_level = 100
 
     def _set_average_speed(self):
-        pass
+        speed_values = [{"age": 10,
+                         "average_speed": 6,
+                         },
+
+                        {"age": 7,
+                         "average_speed": 9
+                         },
+
+                        {"age": 0,
+                         "average_speed": 12
+                         }]
+
+        for item in speed_values:
+            if item["age"] < self.age:
+                return item["average_speed"]
 
     def run(self, hours):
-        pass
+        distance = hours * self.average_speed
+        reduce_values = [{"reduce_level": 50,
+                          "distance": 200,
+                          },
+
+                         {"reduce_level": 25,
+                          "distance": 100
+                          },
+
+                         {"reduce_level": 15,
+                          "distance": 50
+                          },
+
+                         {"reduce_level": 5,
+                          "distance": 25
+                          },
+
+                         {"reduce_level": 2,
+                          "distance": 0
+                          }]
+
+        for item in reduce_values:
+            if item["distance"] < distance:
+                self._reduce_saturation_level(item["reduce_level"])
+                break
+        return (f"Your cat ran {distance} kilometers")
 
     def get_saturation_level(self):
-        pass
+        if self.saturation_level == 0:
+            return "Your cat is died :("
+        else:
+            return self.saturation_level
 
     def get_average_speed(self):
-        pass
+        return self.average_speed
 
 
-class Cheetah:
+class Cheetah(Cat):
     """
     * Inherit from class Cat
 
@@ -77,6 +129,30 @@ class Cheetah:
       if age grosser 15(not including) return 40
 
     """
+
+    def eat(self, product):
+        product_set = {'gazelle': 30, 'rabbit': 15}
+        if product in product_set:
+            self._increase_saturation_level(product_set[product])
+        else:
+            raise ValueError("Incorrect product")
+
+    def _set_average_speed(self):
+        speed_values = [{"age": 15,
+                         "average_speed": 40,
+                         },
+
+                        {"age": 5,
+                         "average_speed": 75
+                         },
+
+                        {"age": 0,
+                         "average_speed": 90
+                         }]
+
+        for item in speed_values:
+            if item["age"] < self.age:
+                return item["average_speed"]
 
 
 class Wall:
@@ -95,13 +171,18 @@ class Wall:
     """
 
     def __init__(self, width, height):
-        pass
+        self.width = width
+        self.height = height
 
     def wall_square(self):
-        pass
+        return self.width * self.height
 
     def number_of_rolls_of_wallpaper(self, roll_width_m, roll_length_m):
-        pass
+        try:
+            return (self.width // roll_width_m) / (roll_length_m // self.height)
+        except ZeroDivisionError:
+            print("Not enough wallpapers")
+            raise ValueError("Not enough wallpapers")
 
 
 class Roof:
@@ -115,11 +196,18 @@ class Roof:
 
     """
 
-    def __init__(self):
-        pass
+    def __init__(self, width, height, roof_type):
+        self.width = width
+        self.height = height
+        self.roof_type = roof_type
 
     def roof_square(self):
-        pass
+        if self.roof_type == "gable":
+            return (self.width * self.height) * 2
+        elif self.roof_type == "single-pitch":
+            return self.width * self.height
+        else:
+            raise ValueError("Incorrect roof type")
 
 
 class Window:
@@ -130,11 +218,12 @@ class Window:
 
     """
 
-    def __init__(self):
-        pass
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
 
     def window_square(self):
-        pass
+        return self.width * self.height
 
 
 class Door:
@@ -155,20 +244,28 @@ class Door:
 
     """
 
-    def __init__(self):
-        pass
+    def __init__(self, width, height):
+        self.width = width
+        self.height = height
+        self.wood_price = 10
+        self.metal_price = 3
 
     def door_square(self):
-        pass
+        return self.width * self.height
 
-    def door_price(self):
-        pass
+    def door_price(self, material):
+        materials = {'wood': self.wood_price, 'metal': self.metal_price}
+        if material in materials:
+            return self.door_square() * materials[material]
+        else:
+            print("Incorrect material")
+            raise ValueError("Incorrect material")
 
-    def update_wood_price(self):
-        pass
+    def update_wood_price(self, new_price):
+        self.wood_price = new_price
 
-    def update_metal_price(self):
-        pass
+    def update_metal_price(self, new_price):
+        self.metal_price = new_price
 
 
 class House:
