@@ -38,15 +38,10 @@ from objects_and_classes.homework.constants import CARS_TYPES, CARS_PRODUCER, TO
 from uuid import uuid4
 from typing import List
 
-<<<<<<< HEAD
 
 class CustomException(Exception):
     def __init__(self, message):
         self.message = message
-=======
-class Cesar:
-    pass
->>>>>>> master
 
 
 class Car:
@@ -128,7 +123,6 @@ class Car:
 
 
 class Garage:
-<<<<<<< HEAD
 
     cars: List[Car]
 
@@ -298,6 +292,4 @@ class Millionaire:
         else:
             self.garages.sort(reverse=True)
             self.garages[0].add(car)
-=======
-    pass
->>>>>>> master
+
