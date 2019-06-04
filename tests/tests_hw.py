@@ -64,7 +64,7 @@ class CarTest(unittest.TestCase):
         self.assertEqual(expected_value, car_str)
 
 
-class CarComparison(unittest.TestCase):
+class CarComparisonTest(unittest.TestCase):
 
     car1 = hw.Car(99999, 'Sedan', 'BENTLEY', 1000)
     car2 = hw.Car(15000, 'Sedan', 'BMW', 10000)
@@ -269,7 +269,7 @@ class MillionaireTest(unittest.TestCase):
         self.assertEqual(expected_value, millionaire_str)
 
 
-class MillionaireComparison (unittest.TestCase):
+class MillionaireComparisonTest (unittest.TestCase):
     car1 = hw.Car(99999, 'Sedan', 'BENTLEY', 1000)
     car2 = hw.Car(15000, 'Sedan', 'BMW', 10000)
     car3 = hw.Car(10000, 'Sedan', 'BMW', 10000)
