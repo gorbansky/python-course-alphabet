@@ -70,22 +70,22 @@ class CarComparisonTest(unittest.TestCase):
     car2 = hw.Car(15000, 'Sedan', 'BMW', 10000)
 
     def test_car_gt_comparison(self):
-        self.assertTrue(CarComparison.car1 > CarComparison.car2)
+        self.assertTrue(CarComparisonTest.car1 > CarComparisonTest.car2)
 
     def test_car_ge_comparison(self):
-        self.assertTrue(CarComparison.car1 >= CarComparison.car2)
+        self.assertTrue(CarComparisonTest.car1 >= CarComparisonTest.car2)
 
     def test_car_ne_comparison(self):
-        self.assertTrue(CarComparison.car1 != CarComparison.car2)
+        self.assertTrue(CarComparisonTest.car1 != CarComparisonTest.car2)
 
     def test_car_lt_comparison(self):
-        self.assertFalse(CarComparison.car1 < CarComparison.car2)
+        self.assertFalse(CarComparisonTest.car1 < CarComparisonTest.car2)
 
     def test_car_le_comparison(self):
-        self.assertFalse(CarComparison.car1 <= CarComparison.car2)
+        self.assertFalse(CarComparisonTest.car1 <= CarComparisonTest.car2)
 
     def test_car_eq_comparison(self):
-        self.assertFalse(CarComparison.car1 == CarComparison.car2)
+        self.assertFalse(CarComparisonTest.car1 == CarComparisonTest.car2)
 
 
 class GarageTest(unittest.TestCase):
@@ -284,22 +284,22 @@ class MillionaireComparisonTest (unittest.TestCase):
     millionaire2.add_car(car3)
 
     def test_millionaire_gt_comparison(self):
-        self.assertTrue(MillionaireComparison.millionaire1 > MillionaireComparison.millionaire2)
+        self.assertTrue(MillionaireComparisonTest.millionaire1 > MillionaireComparisonTest.millionaire2)
 
     def test_millionaire_ge_comparison(self):
-        self.assertTrue(MillionaireComparison.millionaire1 >= MillionaireComparison.millionaire2)
+        self.assertTrue(MillionaireComparisonTest.millionaire1 >= MillionaireComparisonTest.millionaire2)
 
     def test_millionaire_ne_comparison(self):
-        self.assertTrue(MillionaireComparison.millionaire1 != MillionaireComparison.millionaire2)
+        self.assertTrue(MillionaireComparisonTest.millionaire1 != MillionaireComparisonTest.millionaire2)
 
     def test_millionaire_lt_comparison(self):
-        self.assertFalse(MillionaireComparison.millionaire1 < MillionaireComparison.millionaire2)
+        self.assertFalse(MillionaireComparisonTest.millionaire1 < MillionaireComparisonTest.millionaire2)
 
     def test_millionaire_le_comparison(self):
-        self.assertFalse(MillionaireComparison.millionaire1 <= MillionaireComparison.millionaire2)
+        self.assertFalse(MillionaireComparisonTest.millionaire1 <= MillionaireComparisonTest.millionaire2)
 
     def test_millionaire_eq_comparison(self):
-        self.assertFalse(MillionaireComparison.millionaire1 == MillionaireComparison.millionaire2)
+        self.assertFalse(MillionaireComparisonTest.millionaire1 == MillionaireComparisonTest.millionaire2)
 
 
 if __name__ == '__main__':
