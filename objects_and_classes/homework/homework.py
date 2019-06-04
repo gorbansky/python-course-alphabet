@@ -78,22 +78,22 @@ class Car:
                 .format(self.__price, self.__car_type, self.__producer, self.__id, self.__mileage)
 
     def __eq__(self, other):
-        return self.__price == other.price
+        return self.__price == other.get_price()
 
     def __ne__(self, other):
-        return self.__price != other.price
+        return self.__price != other.get_price()
 
     def __gt__(self, other):
-        return self.__price > other.price
+        return self.__price > other.get_price()
 
     def __ge__(self, other):
-        return self.__price >= other.price
+        return self.__price >= other.get_price()
 
     def __lt__(self, other):
-        return self.__price < other.price
+        return self.__price < other.get_price()
 
     def __le__(self, other):
-        return self.__price <= other.price
+        return self.__price <= other.get_price()
 
     def __next__(self):
         if self.__flag:
@@ -148,12 +148,19 @@ class Garage:
             error_stack += "\nIncorrect value for 'Town' argument\n"
 
         if cars:
-            for v_car in cars:
-                if v_car.is_in_garage():
-                    error_stack += "\nCar with id "+str(v_car.id)+" can not be added to more than one garage\n"
-                else:
-                    v_car.set_garage(True)
-                    rollback_list.append(v_car)
+            if not isinstance(cars, List):
+                error_stack += "\nIncorrect value for 'Cars' argument\n"
+            else:
+                for v_car in cars:
+                    if not isinstance(v_car, Car):
+                        error_stack += "\nIncorrect value for 'Cars' argument\n"
+                        break
+                    else:
+                        if v_car.is_in_garage():
+                            error_stack += "\nCar with id "+str(v_car.get_id())+" can not be added to more than one garage\n"
+                        else:
+                            v_car.set_garage(True)
+                            rollback_list.append(v_car)
 
         if error_stack:
             self.rollback(rollback_list)
@@ -193,6 +200,8 @@ class Garage:
         return car.get_id() in (v_car.get_id() for v_car in self.cars)
 
     def remove(self, car):
+        if not isinstance(car, Car):
+            raise CustomException("\nIncorrect value for 'Car' argument\n")
         if car in self.cars:
             self.cars.remove(car)
             car.set_garage(False)
@@ -200,11 +209,13 @@ class Garage:
             raise CustomException("\nCar with id "+str(car.get_id())+" doesn`t exists in this garage\n")
 
     def add(self, car):
+        if not isinstance(car, Car):
+            raise CustomException("\nIncorrect value for 'Car' argument\n")
         if car not in self and not car.is_in_garage():
             self.cars.append(car)
             car.set_garage(True)
         else:
-            raise CustomException("\nCar with id "+str(car.get_id())+" already exists in garage\n")
+            raise CustomException("\nCar with id "+str(car.get_id())+" can not be added to more than one garage\n")
         if not self.enough_space():
             self.remove(car)
             raise CustomException("\nThere is no enough free places in garage\n")
@@ -292,4 +303,3 @@ class Millionaire:
         else:
             self.garages.sort(reverse=True)
             self.garages[0].add(car)
-
