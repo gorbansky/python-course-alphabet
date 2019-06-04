@@ -20,7 +20,7 @@ millionaire_add_gar_errm = "\nGarage can not be assigned to more than one owner\
 millionaire_add_car_errm = "\n{} is not owner of this garage\n"
 
 
-class CarErrTest(unittest.TestCase):
+class CarTest(unittest.TestCase):
     def test_price_error(self):
         with self.assertRaises(hw.CustomException, msg="Should occur the exception") as context:
             car = hw.Car('99999', 'Sedan', 'BENTLEY', 1000)
