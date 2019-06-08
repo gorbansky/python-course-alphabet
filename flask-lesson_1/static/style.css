@@ -27,3 +27,25 @@ a {
 a:hover {
     color: midnightblue;
 }
+
+.container {
+	margin: 0 auto;
+	width: 960px;
+}
+
+.collections {
+	overflow: auto;
+}
+
+.collection-item-outer {
+	display: inline-block;
+	float: left;
+	padding-left: 5px;
+	padding-right: 5px;
+	width: 60%;
+	box-sizing: border-box;
+}
+
+.collection-item {
+	border: 1px solid #959595;
+}
