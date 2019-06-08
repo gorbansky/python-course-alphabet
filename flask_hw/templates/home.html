@@ -1,0 +1,37 @@
+{% extends "boss.html" %}
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+{% block content %}
+	<main class="main">
+
+			<h2 >Food Collection</h2>
+			<div class="collections">
+				<div class="collection-item-outer">
+					<div class="collection-item">
+						<ul>
+                        	<li><a href={{ url_for('fruits_page') }}>&nbsp&nbsp&nbsp&nbsp&nbsp Fruits &nbsp&nbsp&nbsp&nbsp&nbsp</a></li>
+                        </ul>
+					</div>
+				</div>
+				<div class="collection-item-outer">
+					<div class="collection-item">
+						<ul>
+							<li><a href={{ url_for('vegetables_page') }}>&nbsp Vegetables &nbsp</a></li>
+						</ul>
+					</div>
+
+				</div>
+				<div class="collection-item-outer2">
+					<div class="collection-item2">
+						<ul>
+							<li><a href={{ url_for('test_404_page') }}>&nbsp Test 404 error &nbsp</a></li>
+						</ul>
+					</div>
+
+				</div>
+
+			<div/>
+	</main>
+{% endblock %}

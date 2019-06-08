@@ -1,0 +1,31 @@
+{% extends "boss.html" %}
+{% block head %}
+    {{ super() }}
+{% endblock %}
+
+{% block content %}
+<main class="main">
+	<h2>Vegetables list</h2>
+	<div class="collections">
+		<div class="collection-item-outer2">
+			<div class="collection-item">
+				<form action="{{ url_for('vegetable_setup') }}" method="post">
+					<p>Setup vegetable<br>
+						<input type="text" name="definition" size="40" placeholder="Input vegetable name"><br>
+						<input name="action" type="radio" value="add">Add&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp</input><br>
+						<input name="action" type="radio" value="remove">Remove</input><br>
+						<input type="submit">
+					</p>
+				</form>
+			</div>
+		</div>
+		{% for elem in values %}
+			<div class="collection-item-outer">
+				<div class="collection-item">
+					<p >{{ elem }}</p>
+				</div>
+			</div>
+		{% endfor %}
+	</div>
+</main>
+{% endblock %}
