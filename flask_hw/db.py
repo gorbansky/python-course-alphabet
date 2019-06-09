@@ -18,7 +18,6 @@ def add_fruit(definition=None):
         con = psycopg2.connect(**DB)
         sql_query = """INSERT INTO fruits(definition)
                        VALUES ('{}')""".format(definition)
-        print(sql_query)
         con.cursor().execute(sql_query)
         con.commit()
 
@@ -28,7 +27,6 @@ def remove_fruit(definition=None):
         con = psycopg2.connect(**DB)
         sql_query = """DELETE FROM fruits
                                 WHERE lower(definition) = lower('{}')""".format(definition)
-        print(sql_query)
         con.cursor().execute(sql_query)
         con.commit()
 
