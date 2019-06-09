@@ -17,7 +17,7 @@ def add_fruit(definition=None):
     if len(definition) > 0:
         con = psycopg2.connect(**DB)
         sql_query = """INSERT INTO fruits(definition)
-                       VALUES ('{}')""".format(definition)
+                       VALUES ('{}')""".format(definition.replace("'", '"'))
         con.cursor().execute(sql_query)
         con.commit()
 
@@ -26,7 +26,7 @@ def remove_fruit(definition=None):
     if definition is not None:
         con = psycopg2.connect(**DB)
         sql_query = """DELETE FROM fruits
-                                WHERE lower(definition) = lower('{}')""".format(definition)
+                                WHERE lower(definition) = lower('{}')""".format(definition.replace("'", '"'))
         con.cursor().execute(sql_query)
         con.commit()
 
@@ -45,7 +45,7 @@ def add_vegetable(definition=None):
     if definition is not None:
         con = psycopg2.connect(**DB)
         sql_query = """INSERT INTO vegetables(definition)
-                                VALUES ('{}')""".format(definition)
+                                VALUES ('{}')""".format(definition.replace("'", '"'))
         con.cursor().execute(sql_query)
         con.commit()
 
@@ -54,6 +54,6 @@ def remove_vegetable(definition=None):
     if definition is not None:
         con = psycopg2.connect(**DB)
         sql_query = """DELETE FROM vegetables
-                                WHERE lower(definition) = lower('{}')""".format(definition)
+                                WHERE lower(definition) = lower('{}')""".format(definition.replace("'", '"'))
         con.cursor().execute(sql_query)
         con.commit()
