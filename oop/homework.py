@@ -327,49 +327,73 @@ class House:
     """
 
     def __init__(self):
-        pass
+        self.__walls = []
+        self.__windows = []
+        self.__roof = None
+        self.__door = None
 
-    def create_wall(self):
-        pass
+    def create_wall(self, width, height):
+        for parameter in [width, height]:
+            if not isinstance(parameter, (int, float)) or parameter <= 0:
+                raise ValueError('Value must be not 0')
+        if len(self.__walls) == 4:
+            raise ValueError("Our house can not have more than 4 walls")
+        self.__walls.append(Wall(width, height))
 
-    def create_roof(self):
-        pass
+    def create_roof(self, width, height, roof_type):
+        for parameter in [width, height]:
+            if not isinstance(parameter, (int, float)) or parameter <= 0:
+                raise ValueError('Value must be not 0')
+        if self.__roof:
+            raise ValueError("The house can not have two roofs")
+        self.__roof = Roof(width, height, roof_type)
 
-    def create_window(self):
-        pass
+    def create_window(self, width, height):
+        for parameter in [width, height]:
+            if not isinstance(parameter, (int, float)) or parameter <= 0:
+                raise ValueError('Value must be not 0')
+        self.__windows.append(Window(width, height))
 
-    def create_door(self):
-        pass
+    def create_door(self, width, height):
+        for parameter in [width, height]:
+            if not isinstance(parameter, (int, float)) or parameter <= 0:
+                raise ValueError('Value must be not 0')
+        if self.__door:
+            raise ValueError("The house can not have two doors")
+        self.__door = Door(width, height)
 
     def get_count_of_walls(self):
-        pass
+        return len(self.__walls)
 
     def get_count_of_windows(self):
-        pass
+        return len(self.__windows)
 
-    def get_door_price(self):
-        pass
+    def get_door_price(self, material):
+        return self.__door.door_price(material)
 
-    def update_wood_price(self):
-        pass
+    def update_wood_price(self, new_wood_price):
+        self.__door.update_wood_price(new_wood_price)
 
-    def update_metal_price(self):
-        pass
+    def update_metal_price(self, new_metal_price):
+        self.__door.update_metal_price(new_metal_price)
 
     def get_roof_square(self):
-        pass
+        return self.__roof.roof_square()
 
     def get_walls_square(self):
-        pass
+        return sum(map(lambda wall: wall.wall_square(), self.__walls))
 
     def get_windows_square(self):
-        pass
+        return sum(map(lambda window: window.window_square(), self.__windows))
 
     def get_door_square(self):
-        pass
+        return self.__door.door_square()
 
-    def get_number_of_rolls_of_wallpapers(self):
-        pass
+    def get_number_of_rolls_of_wallpapers(self, roll_width_m, roll_length_m):
+        for parameter in [roll_width_m, roll_length_m]:
+            if not isinstance(parameter, (int, float)) or parameter <= 0:
+                raise ValueError('Sorry length must be not 0')
+        return sum(map(lambda wall: wall.number_of_rolls_of_wallpaper(roll_width_m, roll_length_m), self.__walls))
 
     def get_room_square(self):
-        pass
+        return self.get_walls_square() - self.get_windows_square() - self.get_door_square()
